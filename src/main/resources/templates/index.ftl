@@ -43,10 +43,10 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-xs-4" id="menu">
-            <img src="/image/caidanlan.png" class="img-responsive" style="margin-top: -3px" alt="Responsive image">
+            <img src="/image/caidanlan.png" class="img-responsive" style="margin-top: -3px" alt="Responsive image" id="menuImg">
         </div>
         <div class="col-xs-6" id="tool">
-            <img src="/image/gongjulan.png" class="img-responsive" alt="Responsive image" style="width:593px">
+            <img src="/image/gongjulan.png" class="img-responsive" alt="Responsive image" style="width:593px" id="toolImg">
         </div>
     </div>
     <div class="row">
@@ -54,22 +54,22 @@
             <img src="/image/wutaiqu.png" style="height: 291px;width: 412px" class="img-responsive" alt="Responsive image" id="wutaiImg">
             <div class="row">
                 <div class="col-xs-4 col-sm-3" id="bg-list">
-                    <img src="/image/beijingliebiaoqu.png" style="margin-top: -2px;margin-left: 16px;height: 211px;width: 88px" class="img-responsive" alt="Responsive image">
+                    <img src="/image/beijingliebiaoqu.png" style="margin-top: -2px;margin-left: 16px;height: 211px;width: 88px" class="img-responsive" alt="Responsive image" id="bgListImg">
                 </div>
                 <div class="col-xs-8 col-sm-9" id="role-list">
-                    <img src="/image/jueseliebiaoqu.png" style="" class="img-responsive" alt="Responsive image">
+                    <img src="/image/jueseliebiaoqu.png" style="" class="img-responsive" alt="Responsive image" id="roleImg">
                 </div>
             </div>
         </div>
         <!-- Add the extra clearfix for only the required viewport -->
         <div class="clearfix visible-xs-block"></div>
         <div class="col-xs-2" id="command" style="width: 170px">
-            <img src="/image/zhilingqu.png" style="height: 500px" class="img-responsive" alt="Responsive image">
+            <img src="/image/zhilingqu.png" style="height: 500px" class="img-responsive" alt="Responsive image" id="commandImg">
         </div>
         <!-- Add the extra clearfix for only the required viewport -->
         <div class="clearfix visible-xs-block"></div>
         <div class="col-xs-4" id="script">
-            <img src="/image/jiaobenqu.png" style="height: 500px" class="img-responsive" alt="Responsive image">
+            <img src="/image/jiaobenqu.png" style="height: 500px" class="img-responsive" alt="Responsive image" id="scriptImg">
         </div>
 
     </div>
@@ -78,18 +78,17 @@
         <button id="menuBtn" class="ui-widget-content">菜单栏</button>
         <button id="toolBtn"> 工具栏</button>
         <button id="wutaiBtn">舞台区</button>
-        <button>指令区</button>
-        <button>脚本区</button>
-        <button>背景列表区</button>
-        <button>角色列表区</button>
+        <button id="commandBtn">指令区</button>
+        <button id="scriptBtn">脚本区</button>
+        <button id="bgListBtn">背景列表区</button>
+        <button id="roleBtn">角色列表区</button>
     </div>
     <!-- Small modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Small modal</button>
 
     <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
-                ...
+                移动正确,+1分,当前得分:<span id="point"></span>
             </div>
         </div>
     </div>
@@ -97,30 +96,46 @@
 
 </body>
 <script>
-    $('.bs-example-modal-sm').modal('toggle');
     $(function() {
 
         // 设定元素相对原点的初始位置
-        var init_x = 0;
+        var init_x = 1100;
         var init_y = 0;
 
         // 设定各元素的初始位置
-        var _stuname = $("#menuBtn");
-        var stuname_x = 10;
-        var stuname_y = 10;
-        var _feeacount = $("#toolBtn");
-        var feeacount_x = 10;
-        var feeacount_y = 70;
-        var _schoolname = $("#wutaiBtn");
-        var schoolname_x = 10;
-        var schoolname_y = 40;
+        var _menu = $("#menuBtn");
+        var menu_x = init_x;
+        var menu_y = 10;
+        var _tool = $("#toolBtn");
+        var tool_x = init_x;
+        var tool_y = 70;
+        var _wutai = $("#wutaiBtn");
+        var wutai_x = init_x;
+        var wutai_y = 40;
+        var _command = $("#commandBtn");
+        var command_x = init_x;
+        var command_y = 100;
+        var _script = $("#scriptBtn");
+        var script_x = init_x;
+        var script_y = 130;
+        var _bgList = $("#bgListBtn");
+        var bgList_x = init_x;
+        var bgList_y = 160;
+        var _role = $("#roleBtn");
+        var role_x = init_x;
+        var role_y = 190;
 
-        var ids = [ _stuname, _feeacount, _schoolname ];
-        var ids_x = [ stuname_x, feeacount_x, schoolname_x ];
-        var ids_y = [ stuname_y, feeacount_y, schoolname_y ];
+        var ids = [ _menu, _tool, _wutai,_command,_script,_bgList,_role ];
+        var ids_x = [ menu_x, tool_x, wutai_x,command_x,script_x,bgList_x,role_x ];
+        var ids_y = [ menu_y, tool_y, wutai_y,command_y,script_y,bgList_y,role_y ];
+        var point = 0;
+        var flag=[];
+        for (var i=0;i<10;i++) {
+            flag[i]=0;
+        }
 
         // 循环添加元素移动事件监听,添加绝对定位,改变鼠标指针样式
-        $.each(_schoolname, function(i, _this) {
+        $.each(ids, function(i, _this) {
             _this.css({
                 'position' : 'absolute',
                 'cursor' : 'crosshair',
@@ -145,8 +160,6 @@
             // 计算当前鼠标和元素之间位置的偏移量，让移动后的元素以鼠标按下时的位置为坐标。（默认以元素左上点为坐标）
             var px = sx - cx;
             var py = sy - cy;
-            console.log("鼠标提起位置: "+px);
-            console.log("鼠标提起位置: "+py);
 
             // 绑定鼠标的移动事件，因为光标在DIV元素外面也要有效果，所以要用doucment的事件，而不用DIV元素的事件
             $(document).bind("mousemove", function(ev) {
@@ -173,9 +186,73 @@
                     var cx = offset.left;
                     var cy = offset.top;
                     // 保存位置
-                    ids_x[2] = cx;
-                    ids_y[2] = cy;
+                    ids_x[i] = cx;
+                    ids_y[i] = cy;
+                    if (i == 2) {
+                        if (cx>$("#wutaiImg")[0].x &&cx<$("#wutaiImg")[0].x+$("#wutaiImg")[0].width&&cy>$("#wutaiImg")[0].y&&cy<$("#wutaiImg")[0].y+$("#wutaiImg")[0].height) {
+                            if (flag[i] ==0) {
+                                $('.bs-example-modal-sm').modal('toggle');
+                                $("#point").html(++point);
+                                flag[i]=1;
+                            }
+                        }
+                    }
+                    if (i == 0) {
+                        if (cx>$("#menuImg")[0].x &&cx<$("#menuImg")[0].x+$("#menuImg")[0].width&&cy>$("#menuImg")[0].y&&cy<$("#menuImg")[0].y+$("#menuImg")[0].height) {
+                            if (flag[i] ==0) {
+                                $('.bs-example-modal-sm').modal('toggle');
+                                $("#point").html(++point);
+                                flag[i]=1;
+                            }
+                        }
+                    }
 
+                    if (i == 1) {
+                        if (cx>$("#toolImg")[0].x &&cx<$("#toolImg")[0].x+$("#toolImg")[0].width&&cy>$("#toolImg")[0].y&&cy<$("#toolImg")[0].y+$("#toolImg")[0].height) {
+                            if (flag[i] ==0) {
+                                $('.bs-example-modal-sm').modal('toggle');
+                                $("#point").html(++point);
+                                flag[i]=1;
+                            }
+                        }
+                    }
+                    if (i == 3) {
+                        if (cx>$("#commandImg")[0].x &&cx<$("#commandImg")[0].x+$("#commandImg")[0].width&&cy>$("#commandImg")[0].y&&cy<$("#commandImg")[0].y+$("#commandImg")[0].height) {
+                            if (flag[i] ==0) {
+                                $('.bs-example-modal-sm').modal('toggle');
+                                $("#point").html(++point);
+                                flag[i]=1;
+                            }
+                        }
+                    }
+                    if (i == 4) {
+
+                        if (cx>$("#scriptImg")[0].x &&cx<$("#scriptImg")[0].x+$("#scriptImg")[0].width&&cy>$("#scriptImg")[0].y&&cy<$("#scriptImg")[0].y+$("#scriptImg")[0].height) {
+                            if (flag[i] ==0) {
+                                $('.bs-example-modal-sm').modal('toggle');
+                                $("#point").html(++point);
+                                flag[i]=1;
+                            }
+                        }
+                    }
+                    if (i == 5) {
+                        if (cx>$("#bgListImg")[0].x &&cx<$("#bgListImg")[0].x+$("#bgListImg")[0].width&&cy>$("#bgListImg")[0].y&&cy<$("#bgListImg")[0].y+$("#bgListImg")[0].height) {
+                            if (flag[i] ==0) {
+                                $('.bs-example-modal-sm').modal('toggle');
+                                $("#point").html(++point);
+                                flag[i]=1;
+                            }
+                        }
+                    }
+                    if (i == 6) {
+                        if (cx>$("#roleImg")[0].x &&cx<$("#roleImg")[0].x+$("#roleImg")[0].width&&cy>$("#roleImg")[0].y&&cy<$("#roleImg")[0].y+$("#roleImg")[0].height) {
+                            if (flag[i] ==0) {
+                                $('.bs-example-modal-sm').modal('toggle');
+                                $("#point").html(++point);
+                                flag[i]=1;
+                            }
+                        }
+                    }
                 });
 
             })
